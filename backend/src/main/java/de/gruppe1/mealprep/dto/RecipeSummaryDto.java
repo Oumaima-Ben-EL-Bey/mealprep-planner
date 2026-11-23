@@ -9,4 +9,7 @@ public record RecipeSummaryDto(
         String region,
         boolean favorite
 ) {
+    public RecipeSummaryDto withCategory(String category) {
+        return new RecipeSummaryDto(id, externalId, title, imageUrl, category, region, favorite);
+    }
 }
