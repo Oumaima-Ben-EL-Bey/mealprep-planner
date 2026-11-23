@@ -22,4 +22,12 @@ public class ExternalRecipeServiceTest {
         assertFalse(meals.isEmpty());
         assertTrue(meals.stream().allMatch((m) -> "Seafood".equals(m.category())));
     }
+
+    @Test
+    void search_TermAndCategoryAreSet() {
+        List<RecipeSummaryDto> meals = externalRecipeService.search("Rice", "Chicken");
+        assertFalse(meals.isEmpty());
+        assertTrue(meals.stream().allMatch((m) -> "Chicken".equals(m.category())));
+
+    }
 }

@@ -32,6 +32,11 @@ public class ExternalRecipeService {
                     .toList();
         }
 
-        return List.of();
+
+        return mealDbClient.searchByName(term)
+                .stream()
+                .map(mealDbMapper::toSummaryDto)
+                .filter((meal)-> category.equals(meal.category()))
+                .toList();
     }
 }
