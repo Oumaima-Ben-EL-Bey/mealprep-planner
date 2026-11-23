@@ -45,4 +45,10 @@ public class MealDbClientTest {
 
         assertTrue(meals.isEmpty());
     }
+
+    @Test
+    void listCategories_ListIsNotEmpty() {
+        List<MealDbCategory> categories = client.listCategories();
+        assertFalse(categories.isEmpty());
+    }
 }
