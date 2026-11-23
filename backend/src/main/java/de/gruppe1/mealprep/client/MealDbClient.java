@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -22,6 +21,22 @@ public class MealDbClient {
         try {
             response = restClient.get()
                     .uri("/search.php?s={term}", term)
+                    .retrieve()
+                    .body(MealDbResponse.class);
+        } catch (RestClientException e) {
+            throw new ExternalApiException("TheMealDB ist nicht erreichbar", e);
+        }
+        if (response == null || response.meals() == null) {
+            return List.of();
+        }
+        return response.meals();
+    }
+
+    public List<MealDbMeal> filterByCategory(String category) {
+        MealDbResponse response;
+        try {
+            response = restClient.get()
+                    .uri("/filter.php?c={category}", category)
                     .retrieve()
                     .body(MealDbResponse.class);
         } catch (RestClientException e) {

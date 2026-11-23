@@ -29,4 +29,20 @@ public class MealDbClientTest {
 
         assertTrue(meals.isEmpty());
     }
+
+    @Test
+    void filterByCategory_ListIsNotEmpty() {
+
+        List<MealDbMeal> meals = client.filterByCategory("Seafood");
+
+        assertFalse(meals.isEmpty());
+
+    }
+
+    @Test
+    void filterByCategory_ListIsEmpty() {
+        List<MealDbMeal> meals = client.filterByCategory("NotACategory");
+
+        assertTrue(meals.isEmpty());
+    }
 }
