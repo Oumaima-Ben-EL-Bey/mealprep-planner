@@ -5,7 +5,6 @@ import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -19,7 +18,7 @@ public class RecipeService {
 
     public List<Recipe> getAllRecipes(){
        return recipeRepository.findAll();
-    };
+    }
 
     public Recipe getRecipeById(Long id){
       return recipeRepository.findById(id)
