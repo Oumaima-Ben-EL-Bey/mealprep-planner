@@ -3,7 +3,7 @@ package de.gruppe1.mealprep.service;
 import de.gruppe1.mealprep.entity.MealPlanEntry;
 import de.gruppe1.mealprep.entity.MealType;
 import de.gruppe1.mealprep.entity.Recipe;
-import de.gruppe1.mealprep.exception.RecipeNotFoundException;
+import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.repository.MealPlanEntryRepository;
 import de.gruppe1.mealprep.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ public class MealPlanService {
     public  MealPlanEntry assign(DayOfWeek day, MealType mealType, Long recipeId){
         Optional<Recipe> optionalRecipe = recipeRepository.findById(recipeId);
         if(optionalRecipe.isEmpty()){
-            throw new RecipeNotFoundException("Rezept nicht gefunden");
+            throw new NotFoundException("Rezept nicht gefunden");
         }
         Recipe recipe = optionalRecipe.get();
 
