@@ -4,6 +4,7 @@ package de.gruppe1.mealprep.mapper;
 import de.gruppe1.mealprep.dto.IngredientDto;
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeRequestDto;
+import de.gruppe1.mealprep.dto.RecipeSummaryDto;
 import de.gruppe1.mealprep.entity.Recipe;
 import de.gruppe1.mealprep.entity.RecipeIngredient;
 import org.springframework.stereotype.Component;
@@ -68,6 +69,18 @@ public class RecipeMapper {
                 recipe.getInstructions(),
                 recipe.getImageUrl(),
                 ingredients,
+                recipe.isFavorite()
+        );
+    }
+
+    public RecipeSummaryDto toSummaryDto(Recipe recipe) {
+        return new RecipeSummaryDto(
+                recipe.getId(),
+                recipe.getExternalId(),
+                recipe.getTitle(),
+                recipe.getImageUrl(),
+                recipe.getCategory(),
+                recipe.getRegion(),
                 recipe.isFavorite()
         );
     }
