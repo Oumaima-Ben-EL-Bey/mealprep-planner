@@ -7,6 +7,7 @@ import de.gruppe1.mealprep.entity.MealType;
 import de.gruppe1.mealprep.mapper.MealPlanMapper;
 import de.gruppe1.mealprep.service.MealPlanService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
@@ -41,5 +42,20 @@ public class MealPlanController {
                                    @PathVariable MealType mealType,
                                    @Valid @RequestBody AssignRecipeRequestDto requestDto){
         return mealPlanMapper.toDto(mealPlanService.assign(day, mealType, requestDto.recipeId()));
+    }
+
+    @DeleteMapping("/{day}/{mealType}")
+    public ResponseEntity<Void> removeEntry(
+            @PathVariable DayOfWeek day,
+            @PathVariable MealType mealType
+    ){
+        mealPlanService.removeEntry(day, mealType);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> clearPlan(){
+        mealPlanService.clearPlan();
+        return ResponseEntity.noContent().build();
     }
 }
