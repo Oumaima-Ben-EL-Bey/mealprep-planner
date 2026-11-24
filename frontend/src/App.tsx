@@ -6,23 +6,28 @@ import RecipeDetailPage from "./pages/RecipeDetailPage.tsx";
 import WeekPlanPage from "./pages/WeekPlanPage.tsx";
 import ShoppingListPage from "./pages/ShoppingListPage.tsx";
 import PantryPage from "./pages/PantryPage.tsx";
+import NavBar from "./components/NavBar.tsx";
 
 function App() {
     return (
-        <main>
-            <Routes>
-                <Route path="/" element={<DiscoverPage/>}/>
-                <Route path="/recipes" element={<CollectionPage/>}/>
-                <Route path="/recipes/new" element={<RecipeFormPage/>}/>
-                <Route path="/recipes/:id/edit" element={<RecipeFormPage/>}/>
-                <Route path="/recipes/:id" element={<RecipeDetailPage/>}/>
-                <Route path="/recipes/external/:mealDbId" element={<RecipeDetailPage/>}/>
-                <Route path="/plan" element={<WeekPlanPage/>}/>
-                <Route path="/shopping-list" element={<ShoppingListPage/>}/>
-                <Route path="/pantry" element={<PantryPage/>}/>
-                <Route path="*" element={<h1>Seite nicht gefunden</h1>}/>
-            </Routes>
-        </main>
+        <>
+            <NavBar></NavBar>
+            <main>
+
+                <Routes>
+                    <Route path="/" element={<DiscoverPage/>}/>
+                    <Route path="/recipes" element={<CollectionPage/>}/>
+                    <Route path="/recipes/new" element={<RecipeFormPage/>}/>
+                    <Route path="/recipes/:id/edit" element={<RecipeFormPage/>}/>
+                    <Route path="/recipes/:id" element={<RecipeDetailPage/>}/>
+                    <Route path="/recipes/external/:mealDbId" element={<RecipeDetailPage/>}/>
+                    <Route path="/plan" element={<WeekPlanPage/>}/>
+                    <Route path="/shopping-list" element={<ShoppingListPage/>}/>
+                    <Route path="/pantry" element={<PantryPage/>}/>
+                    <Route path="*" element={<h1>Seite nicht gefunden</h1>}/>
+                </Routes>
+            </main>
+        </>
     )
 }
 
