@@ -1,5 +1,9 @@
 package de.gruppe1.mealprep.dto;
 
+/**
+ * Eine Rezeptkarte (Discover-Liste, Sammlung).
+ * id ist null, solange das Rezept nur bei TheMealDB liegt und nicht bei uns gespeichert ist.
+ */
 public record RecipeSummaryDto(
         Long id,
         String externalId,
