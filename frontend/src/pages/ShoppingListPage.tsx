@@ -9,6 +9,8 @@ import {
 } from '../api/shoppingListApi'
 import ShoppingListRow from '../components/ShoppingListRow'
 import AddItemForm from '../components/AddItemForm'
+import Icon from '../components/Icon'
+import { EMPTY_SHOPPING_LIST_IMAGE, SHOPPING_ICONS } from '../icons'
 
 const SAVE_ERROR = 'Die Änderung konnte nicht gespeichert werden. Bitte versuche es noch einmal.'
 
@@ -55,17 +57,23 @@ function ShoppingListPage() {
 
     return (
         <div className="shopping-list">
-            <h1>Einkaufsliste</h1>
-            <button type="button" className="btn" onClick={handleGenerate}>
-                Einkaufsliste aus Wochenplan generieren
-            </button>
+            <div className="page-header">
+                <h1>Einkaufsliste</h1>
+                <button type="button" className="btn btn-expand" onClick={handleGenerate}>
+                    <Icon svg={SHOPPING_ICONS.generieren} size={22} />
+                    <span className="btn-expand-label">Einkaufsliste aus Wochenplan generieren</span>
+                </button>
+            </div>
             <AddItemForm onAdd={handleAdd} />
             {error && <p className="alert-error">{error}</p>}
 
             {loading ? (
                 <p className="status">Einkaufsliste wird geladen …</p>
             ) : items.length === 0 ? (
-                <p className="status">Die Einkaufsliste ist leer. Generiere sie aus dem Wochenplan oder füge Artikel hinzu.</p>
+                <div className="empty-state">
+                    <img src={EMPTY_SHOPPING_LIST_IMAGE} alt="" />
+                    <p>Die Einkaufsliste ist leer. Generiere sie aus dem Wochenplan oder füge Artikel hinzu.</p>
+                </div>
             ) : (
                 <>
                     <div className="section-header">
@@ -80,8 +88,12 @@ function ShoppingListPage() {
                     {checkedItems.length > 0 && (
                         <>
                             <div className="section-header">
-                                <h2>Im Einkaufswagen ({checkedItems.length})</h2>
+                                <h2 className="section-title">
+                                    <Icon svg={SHOPPING_ICONS.einkaufswagen} size={22} />
+                                    Im Einkaufswagen ({checkedItems.length})
+                                </h2>
                                 <button type="button" className="btn btn-secondary" onClick={handleDeleteChecked}>
+                                    <Icon svg={SHOPPING_ICONS.erledigteLoeschen} size={18} />
                                     Erledigte Artikel löschen
                                 </button>
                             </div>
