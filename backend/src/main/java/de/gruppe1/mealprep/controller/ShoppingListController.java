@@ -41,4 +41,9 @@ public class ShoppingListController {
         shoppingListService.deleteCheckedItems();
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/generate")
+    public List<ShoppingListItemDto> generate() {
+        return shoppingListService.generateFromMealPlan();
+    }
 }
