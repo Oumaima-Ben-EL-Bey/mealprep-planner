@@ -28,22 +28,13 @@ public class RecipeController {
     @GetMapping("/api/recipes")
     public List<RecipeSummaryDto> getAllRecipes() {
 
-        List<Recipe> recipes = recipeService.getAllRecipes();
-
-        List<RecipeSummaryDto> result = new ArrayList<>();
-
-        for (Recipe recipe : recipes) {
-            RecipeSummaryDto dto = recipeMapper.toSummaryDto(recipe);
-            result.add(dto);
-        }
-
-        return result;
+        return  recipeService.getAllRecipes();
     }
 
     @GetMapping("/api/recipes/{id}")
     public RecipeDetailDto getRecipeById(@PathVariable Long id) {
-        Recipe recipe = recipeService.getRecipeById(id);
-        return recipeMapper.toDetailDto(recipe);
+        return recipeService.getRecipeById(id);
+
     }
 
     @PostMapping("/api/recipes")

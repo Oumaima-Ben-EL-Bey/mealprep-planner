@@ -47,7 +47,6 @@ public class RecipeMapper {
     }
 
     //umwandlung von entity zum -> dto
-    // Umwandlung von Entity zu DTO
     public RecipeDetailDto toDetailDto(Recipe recipe) {
         List<IngredientDto> ingredients = new ArrayList<>();
 

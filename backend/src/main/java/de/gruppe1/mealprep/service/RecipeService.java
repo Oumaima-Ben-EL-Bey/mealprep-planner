@@ -2,18 +2,23 @@ package de.gruppe1.mealprep.service;
 
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeRequestDto;
+import de.gruppe1.mealprep.dto.RecipeSummaryDto;
 import de.gruppe1.mealprep.entity.Recipe;
 import de.gruppe1.mealprep.entity.RecipeIngredient;
 import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.mapper.RecipeMapper;
 import de.gruppe1.mealprep.repository.RecipeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import de.gruppe1.mealprep.exception.ConflictException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
+@Transactional
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
@@ -23,13 +28,30 @@ public class RecipeService {
         this.recipeMapper = recipeMapper;
     }
 
-    public List<Recipe> getAllRecipes(){
-       return recipeRepository.findAll();
+    public List<RecipeSummaryDto> getAllRecipes(){
+
+        List<Recipe> recipes = recipeRepository.findAll();
+        List<RecipeSummaryDto> result = new ArrayList<>();
+
+        for(
+             Recipe recipe : recipes) {
+
+            result.add(recipeMapper.toSummaryDto(recipe));
+
+
+        }
+        return result;
+
     }
 
-    public Recipe getRecipeById(Long id){
-      return recipeRepository.findById(id)
-              .orElseThrow(() -> new NotFoundException("Recipe not found"));
+    public RecipeDetailDto getRecipeById(Long id){
+
+
+        return recipeMapper.toDetailDto(recipeRepository
+                        .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden")));
+
+
+
     }
 
     public RecipeDetailDto create(RecipeRequestDto dto) {
@@ -46,7 +68,8 @@ public class RecipeService {
     public RecipeDetailDto update(Long id, RecipeRequestDto dto) {
 
         // Bestehendes Rezept finden
-        Recipe recipe = getRecipeById(id);
+        Recipe recipe = recipeRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
 
         // Externe Rezepte dürfen nicht bearbeitet werden
         if (recipe.getExternalId() != null) {
@@ -80,7 +103,8 @@ public class RecipeService {
     public void delete(Long id) {
 
         // Prüfen, ob Rezept existiert
-        Recipe recipe = getRecipeById(id);
+        Recipe recipe = recipeRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
 
         // Rezept löschen
         recipeRepository.delete(recipe);
