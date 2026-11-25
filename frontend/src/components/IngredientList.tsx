@@ -6,10 +6,11 @@ interface IngredientListProps {
 
 function IngredientList({ ingredients }: IngredientListProps) {
     return (
-        <ul>
+        <ul className="tags">
             {ingredients.map((ingredient, index) => (
-                <li key={index}>
-                    {ingredient.measure} {ingredient.name}
+                <li key={index} className="tag">
+                    {ingredient.measure && <span className="tag-measure">{ingredient.measure} </span>}
+                    {ingredient.name}
                 </li>
             ))}
         </ul>
