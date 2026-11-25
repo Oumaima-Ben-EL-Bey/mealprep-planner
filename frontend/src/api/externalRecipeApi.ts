@@ -12,3 +12,8 @@ export async function getExternalRecipe(mealDbId: string): Promise<RecipeDetail>
     const response = await axios.get<RecipeDetail>(`/api/external/recipes/${mealDbId}`)
     return response.data
 }
+
+export async function getRandomRecipe(): Promise<RecipeDetail> {
+    const response = await axios.get<RecipeDetail>('/api/external/recipes/random')
+    return response.data
+}
