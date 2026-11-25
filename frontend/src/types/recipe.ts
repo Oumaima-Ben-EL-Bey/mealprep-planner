@@ -16,4 +16,15 @@ export interface RecipeSummary {
 export interface RecipeDetail extends RecipeSummary{
     instructions: string,
     ingredients: Ingredient[]
+
+
+}
+
+export interface RecipeRequest {
+    title: string,
+    category: string,
+    region: string | null,
+    instructions: string,
+    imageUrl: string | null,
+    ingredients: Ingredient[]
 }
