@@ -6,10 +6,10 @@ interface RecipeCardListProps{
 }
 function RecipeCardList({recipes}:RecipeCardListProps) {
     if (recipes.length === 0) {
-        return <p>Keine Rezepte gefunden.</p>
+        return <p className="status">Keine Rezepte gefunden.</p>
     }
     return (
-        <div>
+        <div className="recipe-grid">
             {recipes
                 .map((rec)=><RecipeCard recipe={rec} key={rec.id??rec.externalId}/>)}
         </div>

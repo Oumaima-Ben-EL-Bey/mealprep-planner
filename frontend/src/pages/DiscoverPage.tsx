@@ -5,6 +5,8 @@ import RecipeCardList from "../components/RecipeCardList.tsx";
 import SearchBar from "../components/SearchBar.tsx";
 import CategorySelect from "../components/CategorySelect.tsx";
 import {useNavigate} from "react-router-dom";
+import Icon from "../components/Icon.tsx";
+import {UI_ICONS} from "../icons.ts";
 
 function DiscoverPage() {
     const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
@@ -45,11 +47,13 @@ function DiscoverPage() {
     return (
         <div>
             <h1>Rezepte entdecken</h1>
-            <SearchBar onSearch={handleSearch}/>
+            <div className="toolbar">
+                <SearchBar onSearch={handleSearch}/>
+                <button type="button" className="btn btn-warm" onClick={handleRandom}><Icon svg={UI_ICONS.ueberraschung} size={18}/>Überraschungsgericht</button>
+            </div>
+            <p className="hint">Abenteuer-Modus: Es kann auch mal Frühstück zum Abendessen geben.</p>
             <CategorySelect value={category} onChange={handleCategory}/>
-            <button type="button" onClick={handleRandom}>Überraschungsgericht</button>
-            <p>Abenteuer-Modus: Es kann auch mal Frühstück zum Abendessen geben.</p>
-            {loading ? <h5>Rezepte werden geladen …</h5> : error ? <h5>{error}</h5> :
+            {loading ? <p className="status">Rezepte werden geladen …</p> : error ? <p className="alert-error">{error}</p> :
                 <RecipeCardList recipes={recipes}/>}
 
         </div>

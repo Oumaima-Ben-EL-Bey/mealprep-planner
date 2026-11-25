@@ -5,6 +5,8 @@ import type { RecipeDetail } from '../types/recipe'
 import { getExternalRecipe } from '../api/externalRecipeApi'
 import { categoryLabel, regionLabel } from '../labels'
 import IngredientList from '../components/IngredientList'
+import Icon from '../components/Icon'
+import { CATEGORY_ICONS, UI_ICONS } from '../icons'
 
 function RecipeDetailPage() {
     const { mealDbId } = useParams()
@@ -23,27 +25,37 @@ function RecipeDetailPage() {
             .finally(() => setLoading(false))
     }, [mealDbId])
 
-    if (loading) return <p>Rezept wird geladen …</p>
-    if (error) return <p>{error}</p>
+    if (loading) return <p className="status">Rezept wird geladen …</p>
+    if (error) return <p className="alert-error">{error}</p>
     if (!recipe) return null
 
     return (
-        <article>
+        <article className="detail">
             <h1>{recipe.title}</h1>
-            {recipe.imageUrl && <img src={recipe.imageUrl} alt={recipe.title} />}
-            <p>Kategorie: {categoryLabel(recipe.category)}</p>
-            {recipe.region && <p>Region: {regionLabel(recipe.region)}</p>}
+            {recipe.imageUrl && <img className="detail-image" src={recipe.imageUrl} alt={recipe.title} />}
+            <div className="card-meta">
+                <span className="badge">
+                    {CATEGORY_ICONS[recipe.category] && <img src={CATEGORY_ICONS[recipe.category]} alt="" />}
+                    {categoryLabel(recipe.category)}
+                </span>
+                {recipe.region && (
+                    <span className="region"><Icon svg={UI_ICONS.region} size={16} />{regionLabel(recipe.region)}</span>
+                )}
+            </div>
 
-            <h2>Zutaten</h2>
+            <h2 className="section-title"><Icon svg={UI_ICONS.zutaten} size={22} />Zutaten</h2>
             <IngredientList ingredients={recipe.ingredients} />
 
-            <h2>Zubereitung</h2>
-            {recipe.instructions
-                .split(/\r?\n/)
-                .filter((line) => line.trim() !== '')
-                .map((line, index) => (
-                    <p key={index}>{line}</p>
-                ))}
+            <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22} />Zubereitung</h2>
+            <ol className="steps">
+                {recipe.instructions
+                    .split(/\r?\n/)
+                    .map((line) => line.trim())
+                    .filter((line) => line !== '' && !/^(step\s*)?\d+[.):]?$/i.test(line))
+                    .map((line, index) => (
+                        <li key={index}>{line}</li>
+                    ))}
+            </ol>
         </article>
     )
 }
