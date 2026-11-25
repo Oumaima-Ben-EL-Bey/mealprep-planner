@@ -388,11 +388,43 @@ select:focus {
   max-width: 720px;
 }
 
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
 .add-item-form {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 16px 0 8px;
+  margin-bottom: 8px;
+}
+
+/* Button zeigt nur das Icon, der Text klappt beim Darüberfahren auf */
+.btn-expand {
+  gap: 0;
+  padding: 9px 11px;
+}
+
+.btn-expand-label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.3s ease, opacity 0.2s ease, margin-left 0.3s ease;
+}
+
+.btn-expand:hover .btn-expand-label,
+.btn-expand:focus-visible .btn-expand-label {
+  max-width: 320px;
+  margin-left: 8px;
+  opacity: 1;
 }
 
 .add-item-form input:first-child {
@@ -459,10 +491,55 @@ select:focus {
   text-decoration: line-through;
 }
 
-.item-tag {
-  padding: 1px 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  font-size: 12px;
+.item-thumb {
+  display: block;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.item-row.checked .item-thumb {
+  opacity: 0.5;
+}
+
+.source-icon {
+  display: inline-flex;
   color: var(--color-muted);
+}
+
+.empty-state {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.empty-state img {
+  width: 160px;
+  margin-bottom: 12px;
+}
+
+/* Tooltip: Text aus data-tooltip, erscheint beim Darüberfahren */
+.has-tooltip {
+  position: relative;
+}
+
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-text);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.has-tooltip:hover::after {
+  opacity: 1;
 }
