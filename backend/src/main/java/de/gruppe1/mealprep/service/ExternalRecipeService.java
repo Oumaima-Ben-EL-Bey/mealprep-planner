@@ -3,6 +3,7 @@ package de.gruppe1.mealprep.service;
 import de.gruppe1.mealprep.client.MealDbClient;
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
+import de.gruppe1.mealprep.exception.ExternalApiException;
 import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.mapper.MealDbMapper;
 import org.springframework.stereotype.Service;
@@ -45,5 +46,10 @@ public class ExternalRecipeService {
         return mealDbClient.lookupById(mealDbId)
                 .map(mealDbMapper::toDetailDto)
                 .orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
+    }
+    public RecipeDetailDto getRandom() {
+        return mealDbClient.random()
+                .map(mealDbMapper::toDetailDto)
+                .orElseThrow(() -> new ExternalApiException("Kein Zufallsrezept erhalten", null));
     }
 }

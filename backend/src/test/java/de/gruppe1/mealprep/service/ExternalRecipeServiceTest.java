@@ -42,4 +42,10 @@ public class ExternalRecipeServiceTest {
     void getDetails_UnknownIdThrowsNotFound() {
         assertThrows(NotFoundException.class, () -> externalRecipeService.getDetails("1"));
     }
+
+    @Test
+    void getRandom_ReturnsRecipeWithIngredients() {
+        RecipeDetailDto dto = externalRecipeService.getRandom();
+        assertFalse(dto.ingredients().isEmpty());
+    }
 }

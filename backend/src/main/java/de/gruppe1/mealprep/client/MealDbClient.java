@@ -67,10 +67,18 @@ public class MealDbClient {
     }
 
     public Optional<Map<String, String>> lookupById(String mealDbId) {
+        return fetchSingleMeal("/lookup.php?i={id}", mealDbId);
+    }
+
+    public Optional<Map<String, String>> random() {
+        return fetchSingleMeal("/random.php");
+    }
+
+    private Optional<Map<String, String>> fetchSingleMeal(String uri, Object... uriVariables) {
         MealDbDetailResponse response;
         try {
             response = restClient.get()
-                    .uri("/lookup.php?i={id}", mealDbId)
+                    .uri(uri, uriVariables)
                     .retrieve()
                     .body(MealDbDetailResponse.class);
         } catch (RestClientException e) {
