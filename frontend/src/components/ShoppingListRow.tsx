@@ -14,6 +14,7 @@ function ShoppingListRow({ item, onToggle }: ShoppingListRowProps) {
                 {item.measure && <span className="item-measure">{item.measure}</span>}
             </label>
             {item.inPantry && <span className="badge">bereits im Vorrat</span>}
+            {item.manual && <span className="item-tag">manuell</span>}
         </li>
     )
 }

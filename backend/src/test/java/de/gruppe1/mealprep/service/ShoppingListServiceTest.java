@@ -2,12 +2,10 @@ package de.gruppe1.mealprep.service;
 
 import de.gruppe1.mealprep.dto.ManualItemRequestDto;
 import de.gruppe1.mealprep.dto.ShoppingListItemDto;
-import de.gruppe1.mealprep.entity.MealPlanEntry;
-import de.gruppe1.mealprep.entity.MealType;
-import de.gruppe1.mealprep.entity.Recipe;
-import de.gruppe1.mealprep.entity.RecipeIngredient;
+import de.gruppe1.mealprep.entity.*;
 import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.repository.MealPlanEntryRepository;
+import de.gruppe1.mealprep.repository.PantryItemRepository;
 import de.gruppe1.mealprep.repository.RecipeRepository;
 import de.gruppe1.mealprep.repository.ShoppingListItemRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,15 +23,22 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class ShoppingListServiceTest {
 
-    @Autowired private ShoppingListService service;
-    @Autowired private ShoppingListItemRepository itemRepository;
-    @Autowired private MealPlanEntryRepository planRepository;
-    @Autowired private RecipeRepository recipeRepository;
+    @Autowired
+    private ShoppingListService service;
+    @Autowired
+    private ShoppingListItemRepository itemRepository;
+    @Autowired
+    private MealPlanEntryRepository planRepository;
+    @Autowired
+    private RecipeRepository recipeRepository;
+    @Autowired
+    private PantryItemRepository pantryRepository;
 
     @BeforeEach
     void clean() {
-        planRepository.deleteAll();
-        itemRepository.deleteAll();
+        planRepository.deleteAllInBatch();
+        itemRepository.deleteAllInBatch();
+        pantryRepository.deleteAllInBatch();
     }
 
     private Recipe recipe(String title, String... nameAndMeasure) {
@@ -114,5 +119,20 @@ class ShoppingListServiceTest {
         List<ShoppingListItemDto> items = service.getList();
         assertEquals(1, items.size());
         assertEquals("Brot", items.get(0).name());
+    }
+
+    @Test
+    void generate_MarksItemsAlreadyInPantry() {
+        PantryItem rice = new PantryItem();
+        rice.setName("Rice");
+        pantryRepository.save(rice);
+        plan(recipe("A", "rice ", "500 g", "Butter", "50 g"), DayOfWeek.MONDAY, MealType.LUNCH);
+        service.addManualItem(new ManualItemRequestDto("Rice", ""));
+
+        List<ShoppingListItemDto> items = service.generateFromMealPlan();
+
+        assertTrue(items.stream().anyMatch(i -> !i.manual() && i.name().equals("rice") && i.inPantry()));
+        assertFalse(find(items, "Butter").inPantry());
+        assertTrue(items.stream().anyMatch(i -> i.manual() && !i.inPantry()));
     }
 }
