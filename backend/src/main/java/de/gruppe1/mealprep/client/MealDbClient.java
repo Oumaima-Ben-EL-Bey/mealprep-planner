@@ -6,6 +6,8 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class MealDbClient {
@@ -47,6 +49,7 @@ public class MealDbClient {
         }
         return response.meals();
     }
+
     public List<MealDbCategory> listCategories() {
         MealDbCategoryResponse response;
         try {
@@ -61,5 +64,21 @@ public class MealDbClient {
             return List.of();
         }
         return response.categories();
+    }
+
+    public Optional<Map<String, String>> lookupById(String mealDbId) {
+        MealDbDetailResponse response;
+        try {
+            response = restClient.get()
+                    .uri("/lookup.php?i={id}", mealDbId)
+                    .retrieve()
+                    .body(MealDbDetailResponse.class);
+        } catch (RestClientException e) {
+            throw new ExternalApiException("TheMealDB ist nicht erreichbar", e);
+        }
+        if (response == null || response.meals() == null || response.meals().isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(response.meals().get(0));
     }
 }

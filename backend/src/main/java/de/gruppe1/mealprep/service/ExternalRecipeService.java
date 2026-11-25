@@ -1,7 +1,9 @@
 package de.gruppe1.mealprep.service;
 
 import de.gruppe1.mealprep.client.MealDbClient;
+import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
+import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.mapper.MealDbMapper;
 import org.springframework.stereotype.Service;
 
@@ -38,5 +40,10 @@ public class ExternalRecipeService {
                 .map(mealDbMapper::toSummaryDto)
                 .filter((meal)-> category.equals(meal.category()))
                 .toList();
+    }
+    public RecipeDetailDto getDetails(String mealDbId) {
+        return mealDbClient.lookupById(mealDbId)
+                .map(mealDbMapper::toDetailDto)
+                .orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
     }
 }
