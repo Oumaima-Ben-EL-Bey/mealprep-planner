@@ -5,8 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Skeleton aus F4: not found, conflict und eine fehlende externe API.
@@ -29,6 +32,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponseDto> handleExternalApi(ExternalApiException ex) {
         return antwort(HttpStatus.BAD_GATEWAY, ex.getMessage(), null);
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponseDto> handleValidation(MethodArgumentNotValidException ex) {
+
+        Map<String, String> fieldErrors = new HashMap<>();
+
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+                fieldErrors.put(error.getField(), error.getDefaultMessage())
+        );
+
+        return antwort(HttpStatus.BAD_REQUEST, "Validierungsfehler", fieldErrors);
+    }
+
 
     private ResponseEntity<ErrorResponseDto> antwort(HttpStatus status, String message,
                                                      java.util.Map<String, String> fieldErrors) {

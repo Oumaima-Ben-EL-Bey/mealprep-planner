@@ -51,4 +51,14 @@ public class MealDbClientTest {
         List<MealDbCategory> categories = client.listCategories();
         assertFalse(categories.isEmpty());
     }
+
+    @Test
+    void lookupById_KnownIdIsFound() {
+        assertTrue(client.lookupById("52772").isPresent());
+    }
+
+    @Test
+    void lookupById_UnknownIdIsEmpty() {
+        assertTrue(client.lookupById("1").isEmpty());
+    }
 }
