@@ -78,8 +78,8 @@ class ShoppingListServiceTest {
         List<ShoppingListItemDto> items = service.generateFromMealPlan();
 
         assertEquals(2, items.size());
-        assertEquals(3, find(items, "Tomaten").measure().split(" \\+ ").length);
-        assertEquals("1 Zehe + 1 Zehe", find(items, "Knoblauch").measure());
+        assertEquals("400 g + 1 Dose", find(items, "Tomaten").measure());
+        assertEquals("2 Zehe", find(items, "Knoblauch").measure());
     }
 
     @Test

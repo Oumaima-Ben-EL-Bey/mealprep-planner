@@ -66,6 +66,7 @@ public class ShoppingListService {
         Set<String> pantry = pantryNames();
 
         Map<String, ShoppingListItem> grouped = new LinkedHashMap<>();
+        Map<String, List<String>> measures = new LinkedHashMap<>();
         for (MealPlanEntry entry : mealPlanEntryRepository.findAll()) {
             for (RecipeIngredient ingredient : entry.getRecipe().getIngredients()) {
                 String name = ingredient.getName() == null ? "" : ingredient.getName().trim();
@@ -73,10 +74,11 @@ public class ShoppingListService {
                     continue;
                 }
                 String key = name.toLowerCase(Locale.ROOT);
-                ShoppingListItem item = grouped.computeIfAbsent(key, k -> newGeneratedItem(name, pantry.contains(k)));
-                addMeasure(item, ingredient.getMeasure());
+                grouped.computeIfAbsent(key, k -> newGeneratedItem(name, pantry.contains(k)));
+                measures.computeIfAbsent(key, k -> new ArrayList<>()).add(ingredient.getMeasure());
             }
         }
+        grouped.forEach((key, item) -> item.setMeasure(MeasureCombiner.combine(measures.get(key))));
 
         itemRepository.saveAll(grouped.values());
         return getList();
@@ -90,13 +92,7 @@ public class ShoppingListService {
         return item;
     }
 
-    private void addMeasure(ShoppingListItem item, String measure) {
-        if (measure == null || measure.isBlank()) {
-            return;
-        }
-        String current = item.getMeasure();
-        item.setMeasure(current.isEmpty() ? measure.trim() : current + " + " + measure.trim());
-    }
+
 
     private Set<String> pantryNames() {
         return pantryItemRepository.findAll().stream()
