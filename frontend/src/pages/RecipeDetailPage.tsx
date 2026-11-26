@@ -8,12 +8,15 @@ import IngredientList from '../components/IngredientList'
 import Icon from '../components/Icon'
 import { CATEGORY_ICONS, UI_ICONS } from '../icons'
 import {getRecipeById} from '../api/recipeApi'
+import ConfirmDialog from "../components/ConfirmDialog.tsx";
 
 function RecipeDetailPage() {
     const { id, mealDbId } = useParams()
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
     const [loading, setLoading] = useState(Boolean(id || mealDbId))
     const [error, setError] = useState<string | null>(null)
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
     const navigate = useNavigate()
 
 
@@ -71,9 +74,25 @@ function RecipeDetailPage() {
                 onClick={()=> navigate(`/recipes/${recipe.id}/edit`)}>Bearbeiten</button> }
 
 
+            {/*Button fürs Löschen*/}
+            {recipe.id !== null && <button
+                onClick={()=> setShowDeleteDialog(true)}>Löschen</button> }
+
+
+
+
             <h2 className="section-title"><Icon svg={UI_ICONS.zutaten} size={22} />Zutaten</h2>
             <IngredientList ingredients={recipe.ingredients} />
 
+            {/*Willst du das wirklich löschen anzeigen lassen*/}
+            {showDeleteDialog && (
+                <ConfirmDialog
+                    title="Rezept löschen?"
+                    message="Möchtest du dieses Rezept wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+                    onCancel={() => setShowDeleteDialog(false)}
+                    onConfirm={() => {}}
+                />
+            )}
             <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22} />Zubereitung</h2>
             <ol className="steps">
                 {recipe.instructions
@@ -84,6 +103,8 @@ function RecipeDetailPage() {
                         <li key={index}>{line}</li>
                     ))}
             </ol>
+
+
         </article>
     )
 }

@@ -13,11 +13,11 @@ function ConfirmDialog({ title, message, onCancel, onConfirm }: ConfirmDialogPro
                 <p>{message}</p>
 
                 <div className="confirm-dialog-actions">
-                    <button onClick={onCancel}>
+                    <button className="btn btn-secondary" onClick={onCancel}>
                         Abbrechen
                     </button>
 
-                    <button onClick={onConfirm}>
+                    <button className="btn btn-danger" onClick={onConfirm}>
                         Löschen
                     </button>
                 </div>
