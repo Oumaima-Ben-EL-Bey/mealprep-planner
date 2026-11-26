@@ -32,6 +32,30 @@ function RecipeFormPage() {
         });
     }
 
+    function handleIngredientChange(
+        index: number,
+        field: "name" | "measure",
+        value: string
+    ) {
+        const updatedIngredients = [...recipe.ingredients];
+
+        updatedIngredients[index] = {
+            ...updatedIngredients[index],
+            [field]: value
+        };
+
+        setRecipe({
+            ...recipe,
+            ingredients: updatedIngredients
+        });
+    }
+
+    function removeIngredient(index: number) {
+        setRecipe({
+            ...recipe,
+            ingredients: recipe.ingredients.filter((_, i) => i !== index)
+        });
+    }
 
     return (
         <div>
@@ -109,6 +133,31 @@ function RecipeFormPage() {
             <button type="button" onClick={addIngredient}>
                 + Zutat hinzufügen
             </button>
+            {recipe.ingredients.map((ingredient, index) => (
+                <div key={index}>
+                    <input
+                        type="text"
+                        placeholder="Zutat"
+                        value={ingredient.name}
+                        onChange={(e) => handleIngredientChange(index, "name", e.target.value)}
+                    />
+
+                    <input
+                        type="text"
+                        placeholder="Menge"
+                        value={ingredient.measure}
+                        onChange={(e) => handleIngredientChange(index, "measure", e.target.value)}
+                    />
+                    <button
+                        type="button"
+                        onClick={() => removeIngredient(index)}
+                    >
+                        Entfernen
+                    </button>
+
+
+                </div>
+            ))}
 
         </div>
     );
