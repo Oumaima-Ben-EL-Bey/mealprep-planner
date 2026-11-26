@@ -1,6 +1,7 @@
 package de.gruppe1.mealprep.client;
 
 import de.gruppe1.mealprep.exception.ExternalApiException;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -14,8 +15,7 @@ public class MealDbClient {
 
     private final RestClient restClient;
 
-    public MealDbClient(RestClient restClient) {
-        this.restClient = restClient;
+    public MealDbClient(@Qualifier("mealDbRestClient") RestClient restClient) {this.restClient = restClient;
     }
 
     public List<MealDbMeal> searchByName(String term) {

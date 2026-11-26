@@ -15,4 +15,13 @@ public class RestClientConfig {
     ) {
         return builder.baseUrl(baseUrl).build();
     }
+    @Bean
+    public RestClient deepLRestClient(RestClient.Builder builder,
+                                      @Value("${deepl.base-url}") String baseUrl,
+                                      @Value("${deepl.api-key}") String apiKey) {
+        return builder.clone()
+                .baseUrl(baseUrl)
+                .defaultHeader("Authorization", "DeepL-Auth-Key " + apiKey)
+                .build();
+    }
 }
