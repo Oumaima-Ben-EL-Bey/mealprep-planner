@@ -12,6 +12,18 @@ export interface MealPlanEntry {
     recipe: RecipeSummary
 }
 
+export interface MealSlotProps{
+    entry: MealPlanEntry|undefined,
+    onClick: ()=> void,
+    onRemove: ()=> void
+}
+
+export interface WeekGridProps{
+    entries: MealPlanEntry[];
+    onSlotClick: (day: DayOfWeek, mealType: MealType)=> void,
+    onRemove: (day: DayOfWeek, mealType: MealType) => void
+}
+
 export const DAYS: DayOfWeek[]=[
     "MONDAY", "TUESDAY" , "WEDNESDAY" , "THURSDAY" , "FRIDAY" , "SATURDAY" , "SUNDAY"
 ];
