@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import type {RecipeSummary} from "../types/recipe.ts";
 import {getRecipes} from "../api/recipeApi.ts";
 import RecipeCardList from "../components/RecipeCardList.tsx";
@@ -10,17 +10,16 @@ function CollectionPage() {
     const [error, setError] = useState<string | null>(null);
 
 
+
+
+
     useEffect(() => {
         async function loadRecipes() {
-            setIsLoading(true);
-
             try {
                 const data = await getRecipes();
                 setRecipes(data);
-
             } catch {
                 setError("Rezepte konnten nicht geladen werden");
-
             } finally {
                 setIsLoading(false);
             }
@@ -28,6 +27,8 @@ function CollectionPage() {
 
         loadRecipes();
     }, []);
+
+
 
     return (
         <div>
