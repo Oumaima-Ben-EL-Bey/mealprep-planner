@@ -16,27 +16,30 @@ function RecipePicker({onSelect, onCancel}: RecipePickerProps) {
 
 
     return (
-        <div>
-            <h2>Rezept auswählen</h2>
-            {loading && <p>Rezepte werden geladen...</p>}
-            {error && <p>Rezepte können nicht geladen werden.</p>}
-            {!loading && !error && recipes.length === 0 && (<p>Du hast noch keine gespeicherten Rezepte</p>)}
-
-
-            <ul>
-                {recipes.map((recipe) => {
-                    const id = recipe.id;
-                    if (id === null) return null;
-                    return (
-                        <li key={id}>
-                            <button type={"button"} onClick={() => onSelect(id)}>
-                                {recipe.title}({categoryLabel(recipe.category)})
-                            </button>
-                        </li>
-                    )
-                })}
-            </ul>
-            <button type={"button"} onClick={onCancel}>Abbrechen</button>
+        <div className="modal-backdrop" onClick={onCancel}>
+            <div className="modal" onClick={(event) => event.stopPropagation()}>
+                <h2>Rezept auswählen</h2>
+                {loading && <p className="status">Rezepte werden geladen...</p>}
+                {error && <p className="alert-error">Rezepte können nicht geladen werden.</p>}
+                {!loading && !error && recipes.length === 0 && (
+                    <p className="status">Du hast noch keine gespeicherten Rezepte.</p>
+                )}
+                <ul className="picker-list">
+                    {recipes.map((recipe) => {
+                        const id = recipe.id;
+                        if (id === null) return null;
+                        return (
+                            <li key={id}>
+                                <button type="button" className="picker-item" onClick={() => onSelect(id)}>
+                                    <span>{recipe.title}</span>
+                                    <span className="badge">{categoryLabel(recipe.category)}</span>
+                                </button>
+                            </li>
+                        )
+                    })}
+                </ul>
+                <button type="button" className="btn btn-secondary" onClick={onCancel}>Abbrechen</button>
+            </div>
         </div>
     );
 }

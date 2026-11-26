@@ -16,25 +16,25 @@ function WeekGrid({entries, onSlotClick, onRemove}: WeekGridProps) {
 
 
     return (
-        <table>
+        <table className="week-grid">
             <thead>
             <tr>
                 <th></th>
-                {MEAL_TYPES.map((mealType) => (
-                    <th key={mealType}>{MEAL_TYPE_LABELS[mealType]}</th>
+                {DAYS.map((day) => (
+                    <th key={day}>{DAY_LABELS[day]}</th>
                 ))}
             </tr>
             </thead>
             <tbody>
-            {DAYS.map((day)=>(
-                <tr key={day}>
-                    <th>{DAY_LABELS[day]}</th>
-                    {MEAL_TYPES.map((mealType)=>(
-                        <td key={mealType}>
+            {MEAL_TYPES.map((mealType) => (
+                <tr key={mealType}>
+                    <th>{MEAL_TYPE_LABELS[mealType]}</th>
+                    {DAYS.map((day) => (
+                        <td key={day}>
                             <MealSlot
-                                entry={findEntry(day,mealType)}
-                                onClick={()=>onSlotClick(day,mealType)}
-                                onRemove={()=>onRemove(day,mealType)}
+                                entry={findEntry(day, mealType)}
+                                onClick={() => onSlotClick(day, mealType)}
+                                onRemove={() => onRemove(day, mealType)}
                             />
                         </td>
                     ))}

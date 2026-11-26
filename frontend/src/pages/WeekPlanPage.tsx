@@ -62,21 +62,26 @@ function WeekPlanPage() {
 
 
     return (
-        <div>
-            <h1>Wochenplan</h1>
-            {error !== null && <p>{error}</p>}
-            {loading && <p>Wochenplan wird geladen...</p>}
-            {!loading&&(
-                <div>
+        <div className="week-plan">
+            <div className="page-header">
+                <h1>Wochenplan</h1>
+                <button type="button" className="btn btn-warm" onClick={handleClear}
+                        disabled={loading || entries.length === 0}>
+                    Wochenplan leeren
+                </button>
+            </div>
+
+            {error !== null && <p className="alert-error">{error}</p>}
+            {loading && <p className="status">Wochenplan wird geladen...</p>}
+
+            {!loading && (
+                <div className="week-grid-wrapper">
                     <WeekGrid entries={entries} onSlotClick={handleSlotClick} onRemove={handleRemove}/>
-                    <button type={"button"} onClick={handleClear} disabled={entries.length===0}>
-                        Wochenplan leeren
-                    </button>
                 </div>
             )}
 
             {selectedSlot !== null && (
-                <RecipePicker onSelect={handleSelect} onCancel={()=>setSelectedSlot(null)}/>
+                <RecipePicker onSelect={handleSelect} onCancel={() => setSelectedSlot(null)}/>
             )}
         </div>
     );
