@@ -114,7 +114,12 @@ function RecipeFormPage() {
                 await createRecipe(cleanedRecipe);
             }
 
-            navigate("/recipes");
+            //anpassung das wenn wir im edit sind kommen wir danach wieder zu dem rezept was wir edditiert haben
+            if (isEditMode) {
+                navigate(`/recipes/${id}`)
+            } else {
+                navigate('/recipes')
+            }
         } catch {
             setError(
                 isEditMode

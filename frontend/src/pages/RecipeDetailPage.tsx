@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import {useNavigate, useParams} from 'react-router-dom'
 import axios from 'axios'
 import type { RecipeDetail } from '../types/recipe'
 import { getExternalRecipe } from '../api/externalRecipeApi'
@@ -14,6 +14,7 @@ function RecipeDetailPage() {
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
     const [loading, setLoading] = useState(Boolean(id || mealDbId))
     const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
 
 
     //Anpassung das auch interne rezepte geladen werden können
@@ -49,7 +50,11 @@ function RecipeDetailPage() {
 
     return (
         <article className="detail">
-            <h1>{recipe.title}</h1>
+            <div>
+                <h1>{recipe.title}</h1>
+
+
+            </div>
             {recipe.imageUrl && <img className="detail-image" src={recipe.imageUrl} alt={recipe.title} />}
             <div className="card-meta">
                 <span className="badge">
@@ -60,6 +65,11 @@ function RecipeDetailPage() {
                     <span className="region"><Icon svg={UI_ICONS.region} size={16} />{regionLabel(recipe.region)}</span>
                 )}
             </div>
+
+            {/*Button wird nur angezeigt wenn es unser eigenes rezept ist von dort aus können wir editieren*/}
+            {recipe.id !== null && <button
+                onClick={()=> navigate(`/recipes/${recipe.id}/edit`)}>Bearbeiten</button> }
+
 
             <h2 className="section-title"><Icon svg={UI_ICONS.zutaten} size={22} />Zutaten</h2>
             <IngredientList ingredients={recipe.ingredients} />
