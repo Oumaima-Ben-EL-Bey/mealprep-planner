@@ -9,6 +9,14 @@ import ueberraschung from './assets/icons/extras/ueberraschung.svg?raw'
 import region from './assets/icons/extras/region.svg?raw'
 import zutaten from './assets/icons/extras/zutaten.svg?raw'
 import zubereitung from './assets/icons/extras/zubereitung.svg?raw'
+import generieren from './assets/icons/einkaufsliste/aus-wochenplan-generieren.svg?raw'
+import hinzufuegen from './assets/icons/einkaufsliste/artikel-hinzufuegen.svg?raw'
+import einkaufswagen from './assets/icons/einkaufsliste/im-einkaufswagen.svg?raw'
+import imVorrat from './assets/icons/einkaufsliste/bereits-im-vorrat.svg?raw'
+import erledigteLoeschen from './assets/icons/einkaufsliste/erledigte-loeschen.svg?raw'
+import quelleManuell from './assets/icons/einkaufsliste/quelle-manuell.svg?raw'
+import quelleWochenplan from './assets/icons/einkaufsliste/quelle-wochenplan.svg?raw'
+import leereListe from './assets/icons/einkaufsliste/leer-illustration.svg'
 
 // Kategorie-Icons haben feste Farben und werden als Bild eingebunden
 import alle from './assets/icons/kategorien/alle.svg'
@@ -30,6 +38,18 @@ import ziege from './assets/icons/kategorien/ziege.svg'
 export const NAV_ICONS = {entdecken, meineRezepte, wochenplan, einkaufsliste, vorrat}
 
 export const UI_ICONS = {suchen, ueberraschung, region, zutaten, zubereitung}
+
+export const SHOPPING_ICONS = {
+    generieren,
+    hinzufuegen,
+    einkaufswagen,
+    imVorrat,
+    erledigteLoeschen,
+    quelleManuell,
+    quelleWochenplan,
+}
+
+export const EMPTY_SHOPPING_LIST_IMAGE = leereListe
 
 export const ALL_CATEGORIES_ICON = alle
 

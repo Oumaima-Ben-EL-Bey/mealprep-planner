@@ -377,3 +377,169 @@ select:focus {
 .tag-measure {
   color: var(--color-muted);
 }
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* Einkaufsliste */
+.shopping-list {
+  max-width: 720px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.add-item-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Button zeigt nur das Icon, der Text klappt beim Darüberfahren auf */
+.btn-expand {
+  gap: 0;
+  padding: 9px 11px;
+}
+
+.btn-expand-label {
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transition: max-width 0.3s ease, opacity 0.2s ease, margin-left 0.3s ease;
+}
+
+.btn-expand:hover .btn-expand-label,
+.btn-expand:focus-visible .btn-expand-label {
+  max-width: 320px;
+  margin-left: 8px;
+  opacity: 1;
+}
+
+.add-item-form input:first-child {
+  flex: 1 1 220px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 32px 0 12px;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.item-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-row label {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.item-row input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  accent-color: var(--color-primary);
+}
+
+.item-measure {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.item-row.checked .item-name,
+.item-row.checked .item-measure {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.item-thumb {
+  display: block;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.item-row.checked .item-thumb {
+  opacity: 0.5;
+}
+
+.source-icon {
+  display: inline-flex;
+  color: var(--color-muted);
+}
+
+.empty-state {
+  padding: 40px 0;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+.empty-state img {
+  width: 160px;
+  margin-bottom: 12px;
+}
+
+/* Tooltip: Text aus data-tooltip, erscheint beim Darüberfahren */
+.has-tooltip {
+  position: relative;
+}
+
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 6px);
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-text);
+  color: #fff;
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.has-tooltip:hover::after {
+  opacity: 1;
+}
