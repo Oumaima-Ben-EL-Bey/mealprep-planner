@@ -7,23 +7,41 @@ import { categoryLabel, regionLabel } from '../labels'
 import IngredientList from '../components/IngredientList'
 import Icon from '../components/Icon'
 import { CATEGORY_ICONS, UI_ICONS } from '../icons'
+import {getRecipeById} from '../api/recipeApi'
 
 function RecipeDetailPage() {
-    const { mealDbId } = useParams()
+    const { id, mealDbId } = useParams()
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
-    const [loading, setLoading] = useState(Boolean(mealDbId))
+    const [loading, setLoading] = useState(Boolean(id || mealDbId))
     const [error, setError] = useState<string | null>(null)
 
+
+    //Anpassung das auch interne rezepte geladen werden können
     useEffect(() => {
-        if (!mealDbId) return
-        getExternalRecipe(mealDbId)
-            .then((data) => setRecipe(data))
-            .catch((e) => {
-                const message = axios.isAxiosError(e) ? e.response?.data?.message : undefined
-                setError(message ?? 'Das Rezept konnte nicht geladen werden. Bitte versuche es später noch einmal.')
-            })
-            .finally(() => setLoading(false))
-    }, [mealDbId])
+        async function loadRecipe() {
+            try {
+                if (id) {
+                    const data = await getRecipeById(Number(id));
+                    setRecipe(data);
+                } else if (mealDbId) {
+                    const data = await getExternalRecipe(mealDbId);
+                    setRecipe(data);
+                }
+            } catch (e) {
+                const message = axios.isAxiosError(e)
+                    ? e.response?.data?.message
+                    : undefined;
+
+                setError(
+                    message ?? "Das Rezept konnte nicht geladen werden. Bitte versuche es später noch einmal."
+                );
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        loadRecipe();
+    }, [id, mealDbId]);
 
     if (loading) return <p className="status">Rezept wird geladen …</p>
     if (error) return <p className="alert-error">{error}</p>

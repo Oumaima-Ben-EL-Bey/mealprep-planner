@@ -1,8 +1,12 @@
-import {Link} from "react-router-dom";
-import {type ReactElement, type ReactEventHandler, useState} from "react";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 import type {RecipeRequest} from "../types/recipe.ts";
+import {createRecipe, getRecipeById, updateRecipe} from "../api/recipeApi.ts";
 
 function RecipeFormPage() {
+
+
+
     const [recipe, setRecipe] = useState<RecipeRequest>({
         title: "",
         category: "",
@@ -11,6 +15,29 @@ function RecipeFormPage() {
         imageUrl: null,
         ingredients: []
     })
+
+
+    const { id } = useParams();
+    const isEditMode = Boolean(id);
+    const navigate = useNavigate();
+    const [error, setError] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
+
+    useEffect(() => {
+        if (!isEditMode || !id) return;
+
+        async function loadRecipe() {
+            try {
+                const data = await getRecipeById(Number(id));
+                setRecipe(data);
+            } catch {
+                setError("Rezept konnte nicht geladen werden.");
+            }
+        }
+
+        loadRecipe();
+    }, [id, isEditMode]);
+
 
     function handleTextChange(
         field: "title" | "category" | "region" | "instructions" | "imageUrl",
@@ -57,15 +84,60 @@ function RecipeFormPage() {
         });
     }
 
+    async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
+        e.preventDefault();
+
+        if (
+            recipe.ingredients.length === 0 ||
+            recipe.ingredients.some(
+                ingredient => !ingredient.name.trim() || !ingredient.measure.trim()
+            )
+        ) {
+            setError("Bitte füge mindestens eine vollständige Zutat hinzu.");
+            return;
+        }
+
+
+        setError(null);
+        setIsSaving(true);
+
+        try {
+            const cleanedRecipe: RecipeRequest = {
+                ...recipe,
+                region: recipe.region?.trim() || null,
+                imageUrl: recipe.imageUrl?.trim() || null
+            };
+
+            if (isEditMode && id) {
+                await updateRecipe(Number(id), cleanedRecipe);
+            } else {
+                await createRecipe(cleanedRecipe);
+            }
+
+            navigate("/recipes");
+        } catch {
+            setError(
+                isEditMode
+                    ? "Rezept konnte nicht aktualisiert werden."
+                    : "Rezept konnte nicht gespeichert werden."
+            );
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
     return (
         <div>
-            <h1>Rezept bearbeiten</h1>
+            <h1>{isEditMode ? "Rezept bearbeiten" : "Neues Rezept erstellen"}</h1>
             <Link to="/recipes">
                 ← Zurück zur Sammlung
             </Link>
 
-            <h2>Neues Rezept erstellen</h2>
 
+            <form onSubmit={handleSubmit}>
+
+
+                {error && <p>{error}</p>}
             <label>
                 Rezeptname
                 <input
@@ -159,6 +231,10 @@ function RecipeFormPage() {
                 </div>
             ))}
 
+                <button type="submit" disabled={isSaving}>
+                    {isSaving ? "Speichert..." : "Rezept speichern"}
+                </button>
+            </form>
         </div>
     );
 }
