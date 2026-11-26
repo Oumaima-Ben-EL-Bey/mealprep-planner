@@ -25,8 +25,9 @@ public class ExternalRecipeController {
 
     @GetMapping("/recipes/{mealDbId}")
     public RecipeDetailDto getExternalRecipe(@PathVariable String mealDbId) {
-        return externalRecipeService.getDetails(mealDbId);
+        return externalRecipeService.getDetailsInGerman(mealDbId);
     }
+
     @GetMapping("/recipes/random")
     public RecipeDetailDto getRandomRecipe() {
         return externalRecipeService.getRandom();

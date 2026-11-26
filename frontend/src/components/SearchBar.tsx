@@ -17,7 +17,7 @@ function SearchBar({onSearch}: SearchBarProps) {
                    type={"text"}
                    value={input}
                    onChange={(event) => setInput(event.target.value)}
-                   placeholder="Rezept suchen, z. B. Pasta"/>
+                   placeholder="Rezept suchen, z. B. Hähnchen"/>
             <button type={"submit"} className="btn"><Icon svg={UI_ICONS.suchen} size={18}/>Suchen</button>
         </form>
     );
