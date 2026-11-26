@@ -18,6 +18,11 @@ export interface MealSlotProps{
     onRemove: ()=> void
 }
 
+export interface RecipePickerProps{
+    onSelect:(recipeId:number) => void,
+    onCancel:()=>void;
+}
+
 export interface WeekGridProps{
     entries: MealPlanEntry[];
     onSlotClick: (day: DayOfWeek, mealType: MealType)=> void,
