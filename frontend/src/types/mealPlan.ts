@@ -29,6 +29,11 @@ export interface WeekGridProps{
     onRemove: (day: DayOfWeek, mealType: MealType) => void
 }
 
+export interface SelectedSlot{
+    day:DayOfWeek,
+    mealType: MealType
+}
+
 export const DAYS: DayOfWeek[]=[
     "MONDAY", "TUESDAY" , "WEDNESDAY" , "THURSDAY" , "FRIDAY" , "SATURDAY" , "SUNDAY"
 ];
