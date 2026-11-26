@@ -7,7 +7,7 @@ import { categoryLabel, regionLabel } from '../labels'
 import IngredientList from '../components/IngredientList'
 import Icon from '../components/Icon'
 import { CATEGORY_ICONS, UI_ICONS } from '../icons'
-import {getRecipeById} from '../api/recipeApi'
+import {deleteRecipe, getRecipeById} from '../api/recipeApi'
 import ConfirmDialog from "../components/ConfirmDialog.tsx";
 
 function RecipeDetailPage() {
@@ -51,6 +51,25 @@ function RecipeDetailPage() {
     if (error) return <p className="alert-error">{error}</p>
     if (!recipe) return null
 
+    //Delete mit überprüfung falls es die id nicht gibt abruch
+    async function handleDelete() {
+        if (!recipe || recipe.id === null) return;
+
+        try {
+            await deleteRecipe(recipe.id);
+            navigate('/recipes');
+        } catch (e) {
+            const message = axios.isAxiosError(e)
+                ? e.response?.data?.message
+                : undefined;
+
+            setError(
+                message ?? 'Das Rezept konnte nicht gelöscht werden.'
+            );
+            setShowDeleteDialog(false);
+        }
+    }
+
     return (
         <article className="detail">
             <div>
@@ -90,7 +109,7 @@ function RecipeDetailPage() {
                     title="Rezept löschen?"
                     message="Möchtest du dieses Rezept wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
                     onCancel={() => setShowDeleteDialog(false)}
-                    onConfirm={() => {}}
+                    onConfirm={handleDelete}
                 />
             )}
             <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22} />Zubereitung</h2>
