@@ -17,7 +17,7 @@ class DeepLClientTest {
 
     @Test
     void translatesEnglishToGerman() {
-        List<String> result = client.translate(List.of("Preheat the oven"), "EN", "DE");
+        List<String> result = client.translate(List.of("Preheat the oven"), "EN", "DE",null);
 
         assertEquals(1, result.size());
         assertNotEquals("Preheat the oven", result.get(0));

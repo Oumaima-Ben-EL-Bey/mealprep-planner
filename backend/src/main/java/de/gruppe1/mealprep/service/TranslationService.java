@@ -35,14 +35,14 @@ public class TranslationService {
     }
 
     public List<String> toGerman(List<String> texts) {
-        return translate(texts, "EN", "DE");
+        return translate(texts, "EN", "DE", "prefer_less");
     }
 
     public String toEnglish(String text) {
-        return translate(List.of(text), "DE", "EN-US").get(0);
+        return translate(List.of(text), "DE", "EN-US", null).get(0);
     }
 
-    private List<String> translate(List<String> texts, String sourceLang, String targetLang) {
+    private List<String> translate(List<String> texts, String sourceLang, String targetLang,String formality) {
         List<String> result = new ArrayList<>(texts);
         List<String> hashes = texts.stream().map(t -> hash(targetLang, t)).toList();
 
@@ -71,7 +71,7 @@ public class TranslationService {
             for (int start = 0; start < missing.size(); start += BATCH_SIZE) {
                 List<Integer> batch = missing.subList(start, Math.min(start + BATCH_SIZE, missing.size()));
                 List<String> translated = deepLClient.translate(
-                        batch.stream().map(texts::get).toList(), sourceLang, targetLang);
+                        batch.stream().map(texts::get).toList(), sourceLang, targetLang,formality);
                 for (int j = 0; j < batch.size(); j++) {
                     int index = batch.get(j);
                     result.set(index, translated.get(j));

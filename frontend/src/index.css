@@ -13,12 +13,14 @@
   --color-text: #1f2a24;
   --color-muted: #5f6b64;
   --color-border: #e3ded3;
+  --color-border-strong: #a89e8a;
 
   --radius: 12px;
   --radius-small: 8px;
   --shadow: 0 1px 2px rgba(31, 42, 36, 0.06), 0 4px 12px rgba(31, 42, 36, 0.06);
   --shadow-hover: 0 2px 4px rgba(31, 42, 36, 0.08), 0 12px 28px rgba(31, 42, 36, 0.14);
   --font: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --font-reading: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
 }
 
 *,
@@ -328,33 +330,34 @@ select:focus {
   margin-bottom: 16px;
 }
 
-.steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: step;
+.instructions {
+  padding: 20px 24px;
+  border: 2px solid var(--color-border-strong);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  font-family: var(--font-reading);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--color-text);
 }
 
-.steps li {
-  position: relative;
-  padding: 0 0 16px 44px;
-  counter-increment: step;
+.instructions p {
+  margin: 0 0 10px;
 }
 
-.steps li::before {
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: var(--color-primary);
-  color: #fff;
-  font-size: 14px;
+.instructions p:last-child {
+  margin-bottom: 0;
+}
+
+.instructions h3 {
+  margin: 18px 0 6px;
+  font-size: 15px;
   font-weight: 600;
-  line-height: 28px;
-  text-align: center;
+  color: var(--color-primary);
+}
+
+.instructions h3:first-child {
+  margin-top: 0;
 }
 
 .tags {
@@ -367,6 +370,7 @@ select:focus {
 }
 
 .tag {
+  font-family: var(--font-reading);
   padding: 4px 12px;
   border: 1px solid var(--color-primary-soft);
   border-radius: 999px;

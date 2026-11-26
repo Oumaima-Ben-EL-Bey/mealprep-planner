@@ -8,6 +8,8 @@ import IngredientList from '../components/IngredientList'
 import Icon from '../components/Icon'
 import { CATEGORY_ICONS, UI_ICONS } from '../icons'
 
+const STEP_NUMBER_ONLY = /^((step|schritt)\s*)?\d+[.):]?$/i
+const STEP_HEADING = /^(?:step|schritt)\s*\d+\s*[-–—:.)]\s*(.+)$/i
 function RecipeDetailPage() {
     const { mealDbId } = useParams()
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
@@ -47,15 +49,16 @@ function RecipeDetailPage() {
             <IngredientList ingredients={recipe.ingredients} />
 
             <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22} />Zubereitung</h2>
-            <ol className="steps">
+            <div className="instructions">
                 {recipe.instructions
                     .split(/\r?\n/)
                     .map((line) => line.trim())
-                    .filter((line) => line !== '' && !/^(step\s*)?\d+[.):]?$/i.test(line))
-                    .map((line, index) => (
-                        <li key={index}>{line}</li>
-                    ))}
-            </ol>
+                    .filter((line) => line !== '' && !STEP_NUMBER_ONLY.test(line))
+                    .map((line, index) => {
+                        const heading = line.match(STEP_HEADING)
+                        return heading ? <h3 key={index}>{heading[1]}</h3> : <p key={index}>{line}</p>
+                    })}
+            </div>
         </article>
     )
 }

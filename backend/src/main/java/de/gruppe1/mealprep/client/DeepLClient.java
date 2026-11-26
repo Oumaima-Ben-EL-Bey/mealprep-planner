@@ -17,12 +17,12 @@ public class DeepLClient {
         this.restClient = restClient;
     }
 
-    public List<String> translate(List<String> texts, String sourceLang, String targetLang) {
+    public List<String> translate(List<String> texts, String sourceLang, String targetLang, String formality) {
         DeepLResponse response;
         try {
             response = restClient.post()
                     .uri("/v2/translate")
-                    .body(new DeepLRequest(texts, sourceLang, targetLang))
+                    .body(new DeepLRequest(texts, sourceLang, targetLang,formality))
                     .retrieve()
                     .body(DeepLResponse.class);
         } catch (RestClientException e) {
