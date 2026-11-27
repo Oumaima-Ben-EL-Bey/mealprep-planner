@@ -32,7 +32,11 @@ public final class MeasureCombiner {
             Map.entry("ounce", "oz"), Map.entry("ounces", "oz"),
             Map.entry("lbs", "lb"), Map.entry("pound", "lb"), Map.entry("pounds", "lb"),
             Map.entry("cloves", "clove")
+            , Map.entry("pinches", "pinch")
     );
+    // Englische Küchen-Einheiten auf Deutsch
+    private static final Map<String, String> GERMAN_UNITS = Map.of(
+            "tbsp", "EL", "tsp", "TL", "clove", "Zehe", "cup", "Tasse", "pinch", "Prise");
 
     private MeasureCombiner() {
     }
@@ -59,17 +63,27 @@ public final class MeasureCombiner {
             unitLabels.putIfAbsent(key, unit);
         }
 
+
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, Double> sum : sums.entrySet()) {
-            String label = unitLabels.get(sum.getKey());
-            append(result, formatNumber(sum.getValue()) + (label.isEmpty() ? "" : " " + label));
+            String label = germanUnit(sum.getKey(), unitLabels.get(sum.getKey()), sum.getValue());            append(result, formatNumber(sum.getValue()) + (label.isEmpty() ? "" : " " + label));
         }
         for (String text : texts.values()) {
             append(result, text);
         }
         return result.toString();
     }
-
+    // Zehe, Tasse und Prise bekommen ab mehr als 1 ein "n": 2 Zehen, 3 Tassen
+    private static String germanUnit(String key, String label, double value) {
+        String german = GERMAN_UNITS.get(key);
+        if (german == null) {
+            return label;
+        }
+        if (value > 1 && german.endsWith("e")) {
+            return german + "n";
+        }
+        return german;
+    }
     private static boolean startsLikeANumber(String unit) {
         return !unit.isEmpty() && (Character.isDigit(unit.charAt(0)) || unit.startsWith("-") || unit.startsWith("/"));
     }
