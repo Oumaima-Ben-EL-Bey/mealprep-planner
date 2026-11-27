@@ -5,10 +5,11 @@ import Icon from "./Icon.tsx";
 import {CATEGORY_ICONS, UI_ICONS} from "../icons.ts";
 
 interface RecipeCardProps {
-    recipe: RecipeSummary
+    recipe: RecipeSummary,
+    onToggleFavorite?: (recipe: RecipeSummary) => void
 }
 
-function RecipeCard({recipe}: RecipeCardProps) {
+function RecipeCard({recipe, onToggleFavorite}: RecipeCardProps) {
     function getPath(): string {
         if (recipe.id !== null) {
             return `/recipes/${recipe.id}`;
@@ -19,6 +20,17 @@ function RecipeCard({recipe}: RecipeCardProps) {
 
     return (
         <Link to={getPath()} className="recipe-card">
+            {recipe.id !== null && onToggleFavorite && (
+                <button type="button"
+                        className={recipe.favorite ? "favorite-btn active" : "favorite-btn"}
+                        aria-label={recipe.favorite ? "Aus den Favoriten entfernen" : "Als Favorit markieren"}
+                        onClick={(event) => {
+                            event.preventDefault();
+                            onToggleFavorite(recipe);
+                        }}>
+                    {recipe.favorite ? "★" : "☆"}
+                </button>
+            )}
             {recipe.imageUrl !== null && (
                 <div className="recipe-card-image">
                     <img src={recipe.imageUrl} alt={recipe.title}/>
@@ -32,7 +44,8 @@ function RecipeCard({recipe}: RecipeCardProps) {
                         {categoryLabel(recipe.category)}
                     </span>
                     {recipe.region !== null && (
-                        <span className="region"><Icon svg={UI_ICONS.region} size={16}/>{regionLabel(recipe.region)}</span>
+                        <span className="region"><Icon svg={UI_ICONS.region}
+                                                       size={16}/>{regionLabel(recipe.region)}</span>
                     )}
                 </div>
             </div>
