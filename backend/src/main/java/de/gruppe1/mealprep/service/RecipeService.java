@@ -13,9 +13,12 @@ import de.gruppe1.mealprep.repository.MealPlanEntryRepository;
 import de.gruppe1.mealprep.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import de.gruppe1.mealprep.exception.ConflictException;
+import de.gruppe1.mealprep.service.ExternalRecipeService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -23,12 +26,14 @@ import java.util.List;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
+    private final ExternalRecipeService externalRecipeService;
     private final MealPlanEntryRepository mealPlanEntryRepository;
 
     public RecipeService(RecipeRepository recipeRepository, RecipeMapper recipeMapper,
                          MealPlanEntryRepository mealPlanEntryRepository) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
+        this.externalRecipeService = externalRecipeService;
         this.mealPlanEntryRepository = mealPlanEntryRepository;
     }
 
@@ -52,11 +57,10 @@ public class RecipeService {
 
 
         return recipeMapper.toDetailDto(recipeRepository
-                .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden")));
+                        .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden")));
 
 
     }
-
     public RecipeSummaryDto setFavorite(Long id, FavoriteRequestDto dto) {
         Recipe recipe = recipeRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
@@ -64,6 +68,7 @@ public class RecipeService {
         recipe.setFavorite(dto.favorite());
         return recipeMapper.toSummaryDto(recipeRepository.save(recipe));
     }
+
 
     public RecipeDetailDto create(RecipeRequestDto dto) {
 
@@ -74,6 +79,21 @@ public class RecipeService {
         Recipe savedRecipe = recipeRepository.save(recipe);
 
         // 3. entity wieder zu dto
+        return recipeMapper.toDetailDto(savedRecipe);
+    }
+
+    public RecipeDetailDto saveExternalRecipe(String mealDbId) {
+
+        if (recipeRepository.existsByExternalId(mealDbId)) {
+            throw new ConflictException("Rezept ist bereits in deiner Sammlung");
+        }
+
+        RecipeDetailDto externalRecipe = externalRecipeService.getDetails(mealDbId);
+
+        Recipe recipe = recipeMapper.toEntity(externalRecipe);
+
+        Recipe savedRecipe = recipeRepository.save(recipe);
+
         return recipeMapper.toDetailDto(savedRecipe);
     }
 
@@ -125,5 +145,5 @@ public class RecipeService {
         recipeRepository.delete(recipe);
     }
 
-
 }
+

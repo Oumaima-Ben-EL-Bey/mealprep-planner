@@ -44,6 +44,18 @@ public class RecipeController {
 
     }
 
+
+
+
+    @PostMapping("/api/recipes/from-external/{mealDbId}")
+    public ResponseEntity<RecipeDetailDto> saveExternalRecipe(
+            @PathVariable String mealDbId
+    ) {
+        RecipeDetailDto savedRecipe = recipeService.saveExternalRecipe(mealDbId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedRecipe);
+    }
+
     @PostMapping("/api/recipes")
     public ResponseEntity<RecipeDetailDto> createRecipe(
             @Valid @RequestBody RecipeRequestDto dto) {
@@ -68,5 +80,4 @@ public class RecipeController {
 
         return ResponseEntity.noContent().build();
     }
-
 }

@@ -1,0 +1,9 @@
+### Rezept speichern
+POST http://localhost:8080/api/recipes/from-external/52772
+
+###
+GET http://localhost:8080/api/recipes
+
+###
+### Externes Rezept direkt abrufen
+GET http://localhost:8080/api/external/recipes/52772

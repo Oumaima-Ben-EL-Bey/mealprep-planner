@@ -46,6 +46,32 @@ public class RecipeMapper {
         return recipe;
     }
 
+    // Umwandlung von externem DTO zur entity
+    public Recipe toEntity (RecipeDetailDto dto) {
+
+        Recipe recipe = new Recipe();
+
+        recipe.setExternalId(dto.externalId());
+        recipe.setTitle(dto.title());
+        recipe.setCategory(dto.category());
+        recipe.setRegion(dto.region());
+        recipe.setInstructions(dto.instructions());
+        recipe.setImageUrl(dto.imageUrl());
+        recipe.setFavorite(dto.favorite());
+
+        for (IngredientDto ingredientDto : dto.ingredients()) {
+
+            RecipeIngredient recipeIngredient = new RecipeIngredient();
+
+            recipeIngredient.setName(ingredientDto.name());
+            recipeIngredient.setMeasure(ingredientDto.measure());
+
+            recipe.addIngredient(recipeIngredient);
+        }
+
+        return recipe;
+    }
+
     //umwandlung von entity zum -> dto
     public RecipeDetailDto toDetailDto(Recipe recipe) {
         List<IngredientDto> ingredients = new ArrayList<>();
