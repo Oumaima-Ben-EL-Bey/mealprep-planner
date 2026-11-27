@@ -1,23 +1,28 @@
-import { useEffect, useState } from 'react'
+import {useEffect, useState} from 'react'
 import {useNavigate, useParams} from 'react-router-dom'
 import axios from 'axios'
-import type { RecipeDetail } from '../types/recipe'
-import { getExternalRecipe } from '../api/externalRecipeApi'
-import { categoryLabel, regionLabel } from '../labels'
+import type {RecipeDetail} from '../types/recipe'
+import {getExternalRecipe} from '../api/externalRecipeApi'
+import {categoryLabel, DAY_LABELS, MEAL_TYPE_LABELS, regionLabel} from '../labels'
 import IngredientList from '../components/IngredientList'
 import Icon from '../components/Icon'
-import { CATEGORY_ICONS, UI_ICONS } from '../icons'
+import {CATEGORY_ICONS, UI_ICONS} from '../icons'
 import {deleteRecipe, getRecipeById} from '../api/recipeApi'
 import ConfirmDialog from "../components/ConfirmDialog.tsx";
+import {getPlan} from "../api/mealPlanApi.ts";
+import {DAYS, MEAL_TYPES} from "../types/mealPlan.ts";
+
 
 const STEP_NUMBER_ONLY = /^((step|schritt)\s*)?\d+[.):]?$/i
 const STEP_HEADING = /^(?:step|schritt)\s*\d+\s*[-–—:.)]\s*(.+)$/i
+
 function RecipeDetailPage() {
-    const { id, mealDbId } = useParams()
+    const {id, mealDbId} = useParams()
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
     const [loading, setLoading] = useState(Boolean(id || mealDbId))
     const [error, setError] = useState<string | null>(null)
     const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+    const [plannedSlots, setPlannedSlots] = useState<string[]>([])
 
     const navigate = useNavigate()
 
@@ -71,46 +76,62 @@ function RecipeDetailPage() {
             setShowDeleteDialog(false);
         }
     }
+    // Vor dem Dialog nachsehen, an welchen Tagen das Rezept eingeplant ist
+    async function openDeleteDialog() {
+        if (!recipe || recipe.id === null) return;
+        const recipeId = recipe.id;
+        try {
+            const plan = await getPlan();
+            const slots = plan
+                .filter((entry) => entry.recipe.id === recipeId)
+                .sort((a, b) => DAYS.indexOf(a.day) - DAYS.indexOf(b.day)
+                    || MEAL_TYPES.indexOf(a.mealType) - MEAL_TYPES.indexOf(b.mealType))
+                .map((entry) => `${DAY_LABELS[entry.day]} (${MEAL_TYPE_LABELS[entry.mealType]})`);
+            setPlannedSlots(slots);
+        } catch {
+            setPlannedSlots([]);
+        }
+        setShowDeleteDialog(true);
+    }
 
     return (
         <article className="detail">
             <h1>{recipe.title}</h1>
-            {recipe.imageUrl && <img className="detail-image" src={recipe.imageUrl} alt={recipe.title} />}
+            {recipe.imageUrl && <img className="detail-image" src={recipe.imageUrl} alt={recipe.title}/>}
             <div className="card-meta">
                 <span className="badge">
-                    {CATEGORY_ICONS[recipe.category] && <img src={CATEGORY_ICONS[recipe.category]} alt="" />}
+                    {CATEGORY_ICONS[recipe.category] && <img src={CATEGORY_ICONS[recipe.category]} alt=""/>}
                     {categoryLabel(recipe.category)}
                 </span>
                 {recipe.region && (
-                    <span className="region"><Icon svg={UI_ICONS.region} size={16} />{regionLabel(recipe.region)}</span>
+                    <span className="region"><Icon svg={UI_ICONS.region} size={16}/>{regionLabel(recipe.region)}</span>
                 )}
             </div>
 
             {/*Button wird nur angezeigt wenn es unser eigenes rezept ist von dort aus können wir editieren*/}
             {recipe.id !== null && <button
-                onClick={()=> navigate(`/recipes/${recipe.id}/edit`)}>Bearbeiten</button> }
+                onClick={() => navigate(`/recipes/${recipe.id}/edit`)}>Bearbeiten</button>}
 
 
             {/*Button fürs Löschen*/}
             {recipe.id !== null && <button
-                onClick={()=> setShowDeleteDialog(true)}>Löschen</button> }
+                onClick={openDeleteDialog}>Löschen</button>}
 
 
-
-
-            <h2 className="section-title"><Icon svg={UI_ICONS.zutaten} size={22} />Zutaten</h2>
-            <IngredientList ingredients={recipe.ingredients} />
+            <h2 className="section-title"><Icon svg={UI_ICONS.zutaten} size={22}/>Zutaten</h2>
+            <IngredientList ingredients={recipe.ingredients}/>
 
             {/*Willst du das wirklich löschen anzeigen lassen*/}
             {showDeleteDialog && (
                 <ConfirmDialog
                     title="Rezept löschen?"
-                    message="Möchtest du dieses Rezept wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
-                    onCancel={() => setShowDeleteDialog(false)}
+                    message={plannedSlots.length > 0
+                        ? `Dieses Rezept ist noch im Wochenplan eingeplant: ${plannedSlots.join(', ')}. Beim Löschen wird es auch dort entfernt. Diese Aktion kann nicht rückgängig gemacht werden.`
+                        : "Möchtest du dieses Rezept wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."}                    onCancel={() => setShowDeleteDialog(false)}
                     onConfirm={handleDelete}
                 />
             )}
-            <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22} />Zubereitung</h2>
+            <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22}/>Zubereitung</h2>
             <div className="instructions">
                 {recipe.instructions
                     .split(/\r?\n/)

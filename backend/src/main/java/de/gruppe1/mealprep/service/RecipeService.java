@@ -5,16 +5,16 @@ import de.gruppe1.mealprep.dto.RecipeRequestDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
 import de.gruppe1.mealprep.entity.Recipe;
 import de.gruppe1.mealprep.entity.RecipeIngredient;
+import de.gruppe1.mealprep.exception.ConflictException;
 import de.gruppe1.mealprep.exception.NotFoundException;
 import de.gruppe1.mealprep.mapper.RecipeMapper;
+import de.gruppe1.mealprep.repository.MealPlanEntryRepository;
 import de.gruppe1.mealprep.repository.RecipeRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import de.gruppe1.mealprep.exception.ConflictException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -22,19 +22,22 @@ import java.util.Optional;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final RecipeMapper recipeMapper;
+    private final MealPlanEntryRepository mealPlanEntryRepository;
 
-    public RecipeService(RecipeRepository recipeRepository, RecipeMapper recipeMapper) {
+    public RecipeService(RecipeRepository recipeRepository, RecipeMapper recipeMapper,
+                         MealPlanEntryRepository mealPlanEntryRepository) {
         this.recipeRepository = recipeRepository;
         this.recipeMapper = recipeMapper;
+        this.mealPlanEntryRepository = mealPlanEntryRepository;
     }
 
-    public List<RecipeSummaryDto> getAllRecipes(){
+    public List<RecipeSummaryDto> getAllRecipes() {
 
         List<Recipe> recipes = recipeRepository.findAll();
         List<RecipeSummaryDto> result = new ArrayList<>();
 
-        for(
-             Recipe recipe : recipes) {
+        for (
+                Recipe recipe : recipes) {
 
             result.add(recipeMapper.toSummaryDto(recipe));
 
@@ -44,12 +47,11 @@ public class RecipeService {
 
     }
 
-    public RecipeDetailDto getRecipeById(Long id){
+    public RecipeDetailDto getRecipeById(Long id) {
 
 
         return recipeMapper.toDetailDto(recipeRepository
-                        .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden")));
-
+                .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden")));
 
 
     }
@@ -65,6 +67,7 @@ public class RecipeService {
         // 3. entity wieder zu dto
         return recipeMapper.toDetailDto(savedRecipe);
     }
+
     public RecipeDetailDto update(Long id, RecipeRequestDto dto) {
 
         // Bestehendes Rezept finden
@@ -105,6 +108,9 @@ public class RecipeService {
         // Prüfen, ob Rezept existiert
         Recipe recipe = recipeRepository
                 .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
+
+        // Einträge im Wochenplan zuerst entfernen, sonst verweigert die Datenbank das Löschen
+        mealPlanEntryRepository.deleteByRecipeId(id);
 
         // Rezept löschen
         recipeRepository.delete(recipe);
