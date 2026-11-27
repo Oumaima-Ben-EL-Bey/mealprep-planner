@@ -26,8 +26,7 @@ function ShoppingListRow({ item, onToggle }: ShoppingListRowProps) {
                 ) : (
                     <span className="item-thumb" />
                 )}
-                <span className="item-name">{item.name}</span>
-                {item.measure && <span className="item-measure">{item.measure}</span>}
+                <span className="item-name">{item.displayName ?? item.name}</span>                {item.measure && <span className="item-measure">{item.measure}</span>}
             </label>
             {item.inPantry && (
                 <span className="badge">
