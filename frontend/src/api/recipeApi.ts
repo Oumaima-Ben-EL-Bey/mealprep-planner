@@ -39,3 +39,11 @@ export async function updateRecipe(
 export async function deleteRecipe(id: number): Promise<void> {
     await axios.delete(`/api/recipes/${id}`)
 }
+
+// Externes rezept in die eigene sammlung speichern
+export async function saveExternalRecipe(mealDbId: string): Promise<RecipeDetail> {
+    const response = await axios.post<RecipeDetail>(
+        `/api/recipes/from-external/${mealDbId}`
+    )
+    return response.data
+}
