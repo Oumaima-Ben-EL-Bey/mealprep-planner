@@ -9,13 +9,14 @@ import Icon from '../components/Icon'
 import {CATEGORY_ICONS, UI_ICONS} from '../icons'
 import {deleteRecipe, getRecipeById} from '../api/recipeApi'
 import ConfirmDialog from "../components/ConfirmDialog.tsx";
+import RecipeActions from '../components/RecipeActions'
+
 import {getPlan} from "../api/mealPlanApi.ts";
 import {DAYS, MEAL_TYPES} from "../types/mealPlan.ts";
 
 
 const STEP_NUMBER_ONLY = /^((step|schritt)\s*)?\d+[.):]?$/i
 const STEP_HEADING = /^(?:step|schritt)\s*\d+\s*[-–—:.)]\s*(.+)$/i
-
 function RecipeDetailPage() {
     const {id, mealDbId} = useParams()
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
@@ -116,6 +117,11 @@ function RecipeDetailPage() {
             {/*Button fürs Löschen*/}
             {recipe.id !== null && <button
                 onClick={openDeleteDialog}>Löschen</button>}
+            <RecipeActions
+                recipe={recipe}
+                onDelete={() => setShowDeleteDialog(true)}
+                onSaved={setRecipe}
+            />
 
 
             <h2 className="section-title"><Icon svg={UI_ICONS.zutaten} size={22}/>Zutaten</h2>
