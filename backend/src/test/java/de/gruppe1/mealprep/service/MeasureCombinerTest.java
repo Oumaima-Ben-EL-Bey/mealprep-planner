@@ -21,22 +21,22 @@ class MeasureCombinerTest {
 
     @Test
     void treatsUnitSpellingsAsTheSameUnit() {
-        assertEquals("3 tbs", MeasureCombiner.combine(List.of("1 tbs", "2 tablespoons")));
+        assertEquals("3 EL", MeasureCombiner.combine(List.of("1 tbs", "2 tablespoons")));
     }
 
     @Test
     void sumsFractionsAndMixedNumbers() {
-        assertEquals("2 cup", MeasureCombiner.combine(List.of("1/2 cup", "1 1/2 cups")));
+        assertEquals("2 Tassen", MeasureCombiner.combine(List.of("1/2 cup", "1 1/2 cups")));
     }
 
     @Test
     void sumsUnicodeFractionsWithGermanComma() {
-        assertEquals("1,5 tsp", MeasureCombiner.combine(List.of("½ tsp", "1 tsp")));
+        assertEquals("1,5 TL", MeasureCombiner.combine(List.of("½ tsp", "1 tsp")));
     }
 
     @Test
     void keepsDifferentUnitsSideBySide() {
-        assertEquals("1 cup + 200 g", MeasureCombiner.combine(List.of("1 cup", "200 g")));
+        assertEquals("1 Tasse + 200 g", MeasureCombiner.combine(List.of("1 cup", "200 g")));
     }
 
     @Test
