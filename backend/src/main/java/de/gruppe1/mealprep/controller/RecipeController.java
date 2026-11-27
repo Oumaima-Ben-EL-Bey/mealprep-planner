@@ -1,5 +1,6 @@
 package de.gruppe1.mealprep.controller;
 
+import de.gruppe1.mealprep.dto.FavoriteRequestDto;
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeRequestDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
@@ -37,6 +38,12 @@ public class RecipeController {
 
     }
 
+    @PatchMapping("/api/recipes/{id}/favorite")
+    public RecipeSummaryDto updateFavorite(@PathVariable Long id, @Valid @RequestBody FavoriteRequestDto dto) {
+        return recipeService.setFavorite(id, dto);
+
+    }
+
     @PostMapping("/api/recipes")
     public ResponseEntity<RecipeDetailDto> createRecipe(
             @Valid @RequestBody RecipeRequestDto dto) {
@@ -61,4 +68,5 @@ public class RecipeController {
 
         return ResponseEntity.noContent().build();
     }
+
 }
