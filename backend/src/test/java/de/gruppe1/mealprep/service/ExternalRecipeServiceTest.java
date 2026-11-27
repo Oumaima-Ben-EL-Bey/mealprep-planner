@@ -48,4 +48,19 @@ public class ExternalRecipeServiceTest {
         RecipeDetailDto dto = externalRecipeService.getRandom();
         assertFalse(dto.ingredients().isEmpty());
     }
+
+    @Test
+    void search_GermanTermFindsRecipes() {
+        assertFalse(externalRecipeService.search("Hähnchen", "").isEmpty());
+    }
+
+    @Test
+    void getDetailsInGerman_TranslatesTitleButKeepsIds() {
+        RecipeDetailDto english = externalRecipeService.getDetails("52772");
+        RecipeDetailDto german = externalRecipeService.getDetailsInGerman("52772");
+
+        assertNotEquals(english.title(), german.title());
+        assertEquals(english.externalId(), german.externalId());
+        assertEquals(english.ingredients().size(), german.ingredients().size());
+    }
 }

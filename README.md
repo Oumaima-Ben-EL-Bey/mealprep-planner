@@ -14,10 +14,10 @@ You need: Git, Java 21, Node.js, Docker Desktop, IntelliJ.
 2. **Create your `.env`**: copy `.env.example` to `.env` in the top folder. `.env` is never committed.
 3. **Start the database** (Docker Desktop must be running)
    ```
-   docker compose up -d
+   docker compose up -d db
    docker ps
    ```
-   `mealprep-db` should show `(healthy)`.
+   `mealprep-db` should show `(healthy)`. For development we only start the database in Docker, the backend runs in IntelliJ and the frontend with `npm run dev`.
 4. **Open the project in IntelliJ**
    - Open the **`mealprep-planner`** folder (the top folder, not `backend`).
    - Right-click `backend/pom.xml` → **Add as Maven Project** and wait for the download to finish.
@@ -30,6 +30,27 @@ You need: Git, Java 21, Node.js, Docker Desktop, IntelliJ.
    npm run dev
    ```
    Open http://localhost:5173. Check the connection: http://localhost:5173/api/test must show Spring's *Whitelabel Error Page* (a 404 from the backend means the proxy works).
+
+### Run the whole app in Docker
+
+**When:** only to check that everything runs together, for example before a demo, after a big merge or before handing in.
+**Not for daily work:** while developing, use IntelliJ and `npm run dev` (step 4 and 5). Changes show up right away there, and you have the debugger and the logs. A Docker build takes several minutes every time.
+
+Start all three services in containers:
+```
+docker compose up --build -d
+```
+Open http://localhost:8081.
+
+- `--build` copies the code as it is on your disk right now into the containers (the branch you have open, including changes you have not committed).
+- Without `--build`, Docker starts the containers from the last build. If you changed code since then, you see the **old** version.
+- The backend container has no port of its own, so it does not clash with the backend in IntelliJ. Both use the same database, so you see the same data in both.
+
+When you go back to developing, stop the two app containers (the database keeps running):
+```
+docker compose stop backend frontend
+```
+To stop everything: `docker compose down`. Never add `-v`, that deletes the database with all data.
 
 ## How we work with Git
 

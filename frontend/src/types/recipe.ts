@@ -16,8 +16,6 @@ export interface RecipeSummary {
 export interface RecipeDetail extends RecipeSummary{
     instructions: string,
     ingredients: Ingredient[]
-
-
 }
 
 export interface RecipeRequest {

@@ -16,4 +16,7 @@ public record RecipeSummaryDto(
     public RecipeSummaryDto withCategory(String category) {
         return new RecipeSummaryDto(id, externalId, title, imageUrl, category, region, favorite);
     }
+    public RecipeSummaryDto withTitle(String title) {
+        return new RecipeSummaryDto(id, externalId, title, imageUrl, category, region, favorite);
+    }
 }

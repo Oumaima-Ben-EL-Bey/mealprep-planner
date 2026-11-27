@@ -11,11 +11,45 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mealprep-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ./backend
+    container_name: mealprep-backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${DB_USER}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+      DEEPL_API_KEY: ${DEEPL_API_KEY}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - mealprep-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: mealprep-frontend
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - mealprep-network
+
 volumes:
   postgres_data:
+
+networks:
+  mealprep-network:
+    driver: bridge

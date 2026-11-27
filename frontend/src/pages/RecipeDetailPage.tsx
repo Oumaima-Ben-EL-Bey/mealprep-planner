@@ -10,6 +10,8 @@ import { CATEGORY_ICONS, UI_ICONS } from '../icons'
 import {deleteRecipe, getRecipeById} from '../api/recipeApi'
 import ConfirmDialog from "../components/ConfirmDialog.tsx";
 
+const STEP_NUMBER_ONLY = /^((step|schritt)\s*)?\d+[.):]?$/i
+const STEP_HEADING = /^(?:step|schritt)\s*\d+\s*[-–—:.)]\s*(.+)$/i
 function RecipeDetailPage() {
     const { id, mealDbId } = useParams()
     const [recipe, setRecipe] = useState<RecipeDetail | null>(null)
@@ -72,11 +74,7 @@ function RecipeDetailPage() {
 
     return (
         <article className="detail">
-            <div>
-                <h1>{recipe.title}</h1>
-
-
-            </div>
+            <h1>{recipe.title}</h1>
             {recipe.imageUrl && <img className="detail-image" src={recipe.imageUrl} alt={recipe.title} />}
             <div className="card-meta">
                 <span className="badge">
@@ -113,17 +111,16 @@ function RecipeDetailPage() {
                 />
             )}
             <h2 className="section-title"><Icon svg={UI_ICONS.zubereitung} size={22} />Zubereitung</h2>
-            <ol className="steps">
+            <div className="instructions">
                 {recipe.instructions
                     .split(/\r?\n/)
                     .map((line) => line.trim())
-                    .filter((line) => line !== '' && !/^(step\s*)?\d+[.):]?$/i.test(line))
-                    .map((line, index) => (
-                        <li key={index}>{line}</li>
-                    ))}
-            </ol>
-
-
+                    .filter((line) => line !== '' && !STEP_NUMBER_ONLY.test(line))
+                    .map((line, index) => {
+                        const heading = line.match(STEP_HEADING)
+                        return heading ? <h3 key={index}>{heading[1]}</h3> : <p key={index}>{line}</p>
+                    })}
+            </div>
         </article>
     )
 }
