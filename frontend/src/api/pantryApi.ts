@@ -1,7 +1,7 @@
 import type {PantryItem, PantryItemRequest} from "../types/pantry.ts";
 import axios from "axios";
 
-const url = "/api/panry";
+const url = "/api/pantry";
 
 export async function getPantryItems(): Promise<PantryItem[]>{
     const response = await axios.get<PantryItem[]>(url);
