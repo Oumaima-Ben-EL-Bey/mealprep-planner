@@ -12,12 +12,15 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
@@ -33,12 +36,15 @@ class ShoppingListServiceTest {
     private RecipeRepository recipeRepository;
     @Autowired
     private PantryItemRepository pantryRepository;
+    @MockitoBean
+    private TranslationService translationService;
 
     @BeforeEach
     void clean() {
         planRepository.deleteAllInBatch();
         itemRepository.deleteAllInBatch();
         pantryRepository.deleteAllInBatch();
+        when(translationService.toGerman(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
     }
 
     private Recipe recipe(String title, String... nameAndMeasure) {
@@ -134,5 +140,18 @@ class ShoppingListServiceTest {
         assertTrue(items.stream().anyMatch(i -> !i.manual() && i.name().equals("rice") && i.inPantry()));
         assertFalse(find(items, "Butter").inPantry());
         assertTrue(items.stream().anyMatch(i -> i.manual() && !i.inPantry()));
+    }
+    @Test
+    void generate_MarksIngredientAsInPantry_WhenPantryHasGermanName() {
+        when(translationService.toGerman(List.of("Rice"))).thenReturn(List.of("Reis"));
+        PantryItem reis = new PantryItem();
+        reis.setName("Reis");
+        pantryRepository.save(reis);
+        plan(recipe("Reispfanne", "Rice", "200 g"), DayOfWeek.MONDAY, MealType.LUNCH);
+
+        ShoppingListItemDto item = service.generateFromMealPlan().get(0);
+
+        assertEquals("Reis", item.displayName());
+        assertTrue(item.inPantry());
     }
 }

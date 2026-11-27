@@ -19,6 +19,10 @@ public class ShoppingListItem {
     @Column(nullable = false)
     private String name;
 
+    // Deutscher Anzeigename, name bleibt das Original (für Bild, Gruppierung und Vorratsabgleich)
+    @Column(name = "display_name")
+    private String displayName;
+
     private String measure;
 
     @Column(nullable = false)

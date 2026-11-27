@@ -11,6 +11,7 @@ public class ShoppingListMapper {
         return new ShoppingListItemDto(
                 item.getId(),
                 item.getName(),
+                item.getDisplayName(),
                 item.getMeasure(),
                 item.isChecked(),
                 item.isManual(),
