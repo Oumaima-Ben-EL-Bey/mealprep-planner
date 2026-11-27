@@ -17,3 +17,9 @@ export interface PantryItemFormProps{
     onSubmit:(request:PantryItemRequest)=>Promise<boolean>,
     onCancel?:()=> void
 }
+
+export interface PantryItemRowProps{
+    item: PantryItem,
+    onUpdate:(id:number, request: PantryItemRequest)=>Promise<boolean>,
+    onDelete:(id:number)=> void
+}
