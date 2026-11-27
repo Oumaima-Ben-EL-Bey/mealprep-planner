@@ -1,5 +1,6 @@
 package de.gruppe1.mealprep.service;
 
+import de.gruppe1.mealprep.dto.FavoriteRequestDto;
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeRequestDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
@@ -54,6 +55,14 @@ public class RecipeService {
                 .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden")));
 
 
+    }
+
+    public RecipeSummaryDto setFavorite(Long id, FavoriteRequestDto dto) {
+        Recipe recipe = recipeRepository
+                .findById(id).orElseThrow(() -> new NotFoundException("Rezept nicht gefunden"));
+
+        recipe.setFavorite(dto.favorite());
+        return recipeMapper.toSummaryDto(recipeRepository.save(recipe));
     }
 
     public RecipeDetailDto create(RecipeRequestDto dto) {
@@ -115,5 +124,6 @@ public class RecipeService {
         // Rezept löschen
         recipeRepository.delete(recipe);
     }
+
 
 }

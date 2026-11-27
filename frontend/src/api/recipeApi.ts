@@ -14,6 +14,12 @@ export async function getRecipeById(id: number): Promise<RecipeDetail> {
     return response.data
 }
 
+//Rezept als Favorite setzen/entsetzen
+export async function setFavorite(id: number, status: boolean): Promise<RecipeSummary> {
+    const response = await axios.patch<RecipeSummary>(`/api/recipes/${id}/favorite`, {favorite: status})
+    return response.data
+}
+
 //ein Rezept erstellen
 export async function createRecipe(data: RecipeRequest): Promise<RecipeDetail> {
     const response = await axios.post<RecipeDetail>('/api/recipes', data)
