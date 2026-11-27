@@ -1,5 +1,6 @@
 package de.gruppe1.mealprep.controller;
 
+import de.gruppe1.mealprep.dto.RandomMode;
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
 import de.gruppe1.mealprep.service.ExternalRecipeService;
@@ -28,8 +29,10 @@ public class ExternalRecipeController {
         return externalRecipeService.getDetailsInGerman(mealDbId);
     }
 
+
     @GetMapping("/recipes/random")
-    public RecipeDetailDto getRandomRecipe() {
-        return externalRecipeService.getRandom();
+    public RecipeDetailDto getRandomRecipe(@RequestParam(defaultValue = "ADVENTURE") RandomMode mode,
+                                           @RequestParam(defaultValue = "") String category) {
+        return externalRecipeService.getRandom(mode, category);
     }
 }

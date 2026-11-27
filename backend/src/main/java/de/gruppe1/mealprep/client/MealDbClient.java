@@ -49,6 +49,21 @@ public class MealDbClient {
         }
         return response.meals();
     }
+    public List<MealDbMeal> filterByIngredient(String ingredient) {
+        MealDbResponse response;
+        try {
+            response = restClient.get()
+                    .uri("/filter.php?i={ingredient}", ingredient)
+                    .retrieve()
+                    .body(MealDbResponse.class);
+        } catch (RestClientException e) {
+            throw new ExternalApiException("TheMealDB ist nicht erreichbar", e);
+        }
+        if (response == null || response.meals() == null) {
+            return List.of();
+        }
+        return response.meals();
+    }
 
     public List<MealDbCategory> listCategories() {
         MealDbCategoryResponse response;

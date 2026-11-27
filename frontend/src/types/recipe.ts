@@ -26,3 +26,5 @@ export interface RecipeRequest {
     imageUrl: string | null,
     ingredients: Ingredient[]
 }
+
+export type RandomMode = "ADVENTURE" | "CATEGORY" | "PANTRY"

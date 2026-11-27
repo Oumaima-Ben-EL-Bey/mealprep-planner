@@ -1,5 +1,6 @@
 package de.gruppe1.mealprep.service;
 
+import de.gruppe1.mealprep.dto.RandomMode;
 import de.gruppe1.mealprep.dto.RecipeDetailDto;
 import de.gruppe1.mealprep.dto.RecipeSummaryDto;
 import de.gruppe1.mealprep.exception.NotFoundException;
@@ -62,5 +63,11 @@ public class ExternalRecipeServiceTest {
         assertNotEquals(english.title(), german.title());
         assertEquals(english.externalId(), german.externalId());
         assertEquals(english.ingredients().size(), german.ingredients().size());
+    }
+
+    @Test
+    void getRandom_CategoryMode_ReturnsRecipeFromThatCategory() {
+        RecipeDetailDto recipe = externalRecipeService.getRandom(RandomMode.CATEGORY, "Seafood");
+        assertEquals("Seafood", recipe.category());
     }
 }
